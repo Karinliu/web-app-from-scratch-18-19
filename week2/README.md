@@ -150,6 +150,6 @@ To see the project you can download or clone this document with the following co
 ```
 git clone https://github.com/Karinliu/web-app-from-scratch-18-19.git
 
-cd web-app-from-scratch-18-19/week1
+cd web-app-from-scratch-18-19/week2
 ```
 
