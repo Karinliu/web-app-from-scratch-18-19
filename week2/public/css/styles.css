@@ -105,6 +105,9 @@ a{
   #home{
       height: 21em;
   }
+    #detail{
+    grid-column: 1/3;
+  }
 }
 
 @media (min-width: 75em){
@@ -114,5 +117,9 @@ a{
   }
   #home{
     height: 19em;
+  }
+
+  #detail{
+    grid-column: 1/5;
   }
 }
