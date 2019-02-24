@@ -1,12 +1,51 @@
 html{
   background: #B1EDE8;
+  font-family: "avenir", "Arial", sans-serif;
 }
 
-/* main{
-  display: grid;
-  grid-template-columns: 1fr 1fr 1fr;
-  grid-template-rows: auto;
-} */
+header div {
+    position: relative;
+    font: 0/0 a;
+    background: url(../images/logo.png);
+    background-repeat: no-repeat;
+    background-size: 8rem;
+    width: 8rem;
+    height: 4rem;
+    margin-left: auto;
+    margin-right: auto;
+    left: 0;
+    right: 0;
+}
+
+header> nav ul li {
+    text-align: center;
+    display: flex;
+    flex-direction: column;
+}
+
+header > nav ul {
+    display: inline;
+    list-style: none;
+    padding: 0;
+}
+
+header nav ul li a {
+    font-family: "handlee", "Arial", sans-serif;
+    text-decoration: none;
+    text-align: center;
+}
+
+hr{
+    border: 0.02em solid #7dd2cb;
+}
+
+.active{
+  display: block;
+}
+
+.hidden{
+  display: none;
+}
 
 section{
   margin: 1em;
@@ -20,20 +59,24 @@ section{
   background: #FFFCF9;
 }
 
-.active{
-  display: block;
-}
-
-.hidden{
-  display: none;
-}
-
-section:hover{
+#home:hover{
   cursor: pointer;
   transform: rotateY(180deg);
 }
 
-p{
+#home:hover
+  p{
+  display: block;
+  margin: 1em;
+  height: auto;
+}
+
+#home:hover
+  h1{
+  display: none;
+}
+
+#home p{
   display: none;
   transform: rotateY(180deg)
 }
@@ -43,16 +86,14 @@ a{
   color: black;
 }
 
-section:hover
-  p{
-  display: block;
+#detail{
   margin: 1em;
-  height: auto;
-}
-
-section:hover
-  h1{
-  display: none;
+  padding: 1em;
+  border: 0.05em solid #BFD7EA;
+  text-align: center;
+  border-radius: 1em;
+  background: #FFFCF9;
+  grid-column: 1/3;
 }
 
 
@@ -61,7 +102,7 @@ section:hover
     display: grid;
     grid-template-columns: 1fr 1fr;
   }
-  section{
+  #home{
       height: 21em;
   }
 }
@@ -71,7 +112,7 @@ section:hover
     display: grid;
     grid-template-columns: 1fr 1fr 1fr;
   }
-  section{
+  #home{
     height: 19em;
   }
 }
