@@ -110,10 +110,10 @@
                 const templateDetailElements = { // create elements for the class and div's.
                     title: filmId.title,
                     description: filmId.description,
-                    director: filmId.director,
-                    producer: filmId.producer,
-                    releasedate: filmId.releasedate,
-                    ratescore: filmId.ratescore
+                    director: 'Director: ' + filmId.director,
+                    producer: 'Producer: ' + filmId.producer,
+                    releasedate: 'Releasedata: ' + filmId.release_date,
+                    ratescore: 'Average ratescore: '+ filmId.rt_score
                 };
                 saveDetailData.push(templateDetailElements)
             })
