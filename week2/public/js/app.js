@@ -12,11 +12,10 @@
                             console.log('data is home')
                         });
                 },
-                'detail/:id': function(id) {
+                'detail/:id': function() {
                     api.getData(api.overViewUrl)
                         .then(data => {
                             console.log('data is detail')
-                            console.log(api.overViewUrl)
                             sections.showDetail();
                             render.createDetailElements(data)
                         });
