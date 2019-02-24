@@ -13,10 +13,10 @@
                         });
                 },
                 'detail/:id': function(id) {
-                    api.getData(api.overViewUrl + `${id}`)
+                    api.getData(api.overViewUrl)
                         .then(data => {
                             console.log('data is detail')
-                            console.log(api.overViewUrl + `${id}`)
+                            console.log(api.overViewUrl)
                             sections.showDetail();
                             render.createDetailElements(data)
                         });
@@ -123,6 +123,7 @@
     router.overview();
 })();
 
+// Reference filter, map and reduce: https://medium.com/poka-techblog/simplify-your-javascript-use-map-reduce-and-filter-bd02c593cc2d
 // Reference routie: https://github.com/jgallen23/routie/blob/master/test/routie.test.js
 // Reference transparency template: https://github.com/leonidas/transparency/
 // Reference promise: https://developer.mozilla.org/nl/docs/Web/JavaScript/Reference/Global_Objects/Promise
