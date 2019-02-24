@@ -20,6 +20,14 @@ section{
   background: #FFFCF9;
 }
 
+.active{
+  display: block;
+}
+
+.hidden{
+  display: none;
+}
+
 section:hover{
   cursor: pointer;
   transform: rotateY(180deg);
