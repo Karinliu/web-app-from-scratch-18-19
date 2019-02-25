@@ -2,14 +2,22 @@
 (function() {
 
     const router = {
-        overview: function() {
-            routie({
+        // checkLocalStorage: function() {
+        //     // logic if empty => init()
+        //     // if not... do sum with local storage data
+        // },
+        init: function() {
+            routie({ 
                 '': function() {
                     api.getData(api.overViewUrl)
                         .then(data => {
                             sections.showMain();
-                            render.createElements(data)
-                            console.log('data is home')
+                            render.createElements(data);
+                            localstorage.localData(data);
+                            // console.log(render.localData(data));
+                            console.log('data is home');
+                        })
+                        .catch(error => {
                         });
                 },
                 'detail/:id': function() {
@@ -55,6 +63,7 @@
                     if (request.status >= 200 && request.status < 400) { // if status is higher than 200 and status is lower than 400 perform function.
                         const data = api.parseData(request); //Fetch data from API into JavaScript file
                         resolve(data); // "resolve" the function createElements
+
                     } else { // if not then performs this function
                         reject(error); // error
                     }
@@ -67,6 +76,29 @@
         },
         parseData: function(request) {
             return JSON.parse(request.responseText);
+        }
+    }
+
+    const localstorage = {
+        localData: function(data){ 
+            const saveLocalData = [];
+
+            data.map(films => { // Map is used to get only an array that contains the title and descriptions of the data from each film.
+                const localElements = { // create elements for the class and div's.
+                    title: films.title,
+                    description: films.description,
+                    director: films.director,
+                    producer: films.producer,
+                    releasedate: films.release_date,
+                    ratescore: films.rt_score
+                };
+                saveLocalData.push(localElements)
+                    // console.log(films.title);
+            })
+
+            window.localStorage.setItem('film', JSON.stringify(saveLocalData));          //Set title and description in localStorage
+            const jsLocalstorage = JSON.parse(window.localStorage.getItem('film'));   // parse window.localstorage into a json object
+            console.log(jsLocalstorage);
         }
     }
 
@@ -84,16 +116,17 @@
                 saveData.push(templateElements)
                     // console.log(films.title);
             })
-            Transparency.render(template, saveData);
+            // Transparency.render(template, saveData);
 
             const directives = { // Directives are plain javascript functions defined in a two-dimensional object literal, i.e.,
                 link: {
-                    href: function(params) {
+                    href() {
                         return "#detail/" + this.id;
                     }
                 }
             }
-            Transparency.render(template, data, directives);
+            
+            Transparency.render(template, data, directives, saveData);
         },
         createDetailElements: function(data) {
             const template = document.getElementById('main');
@@ -119,7 +152,7 @@
             Transparency.render(template, saveDetailData);
         }
     };
-    router.overview();
+    router.init();
 })();
 
 // Reference filter, map and reduce: https://medium.com/poka-techblog/simplify-your-javascript-use-map-reduce-and-filter-bd02c593cc2d
