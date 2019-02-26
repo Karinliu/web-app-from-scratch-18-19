@@ -2,10 +2,9 @@
 (function() {
 
     const router = {
-        // checkLocalStorage: function() {
-        //     // logic if empty => init()
-        //     // if not... do sum with local storage data
-        // },
+        handle: function(){
+                localstorageData.handle();
+            },
         init: function() {
             routie({ 
                 '': function() {
@@ -13,12 +12,11 @@
                         .then(data => {
                             sections.showMain();
                             render.createElements(data);
-                            localstorage.localData(data);
-                            // console.log(render.localData(data));
+                            localstorageData.localData(data);
                             console.log('data is home');
                         })
                         .catch(error => {
-                        });
+                    });
                 },
                 'detail/:id': function() {
                     api.getData(api.overViewUrl)
@@ -79,7 +77,20 @@
         }
     }
 
-    const localstorage = {
+    const localstorageData = {
+        handle: function() {
+            let getLocalstorageData = localStorage.getItem('film');
+            getLocalstorageData = JSON.parse(getLocalstorageData);
+
+            if (getLocalstorageData){ //If localData has data then use this data
+                
+            }
+            else{              //If localstorage is empty, do a get request
+               router.init();
+            }
+            // logic if empty => init()
+            // if not... do sum with local storage data
+        },
         localData: function(data){ 
             const saveLocalData = [];
 
@@ -152,7 +163,7 @@
             Transparency.render(template, saveDetailData);
         }
     };
-    router.init();
+    router.handle();
 })();
 
 // Reference filter, map and reduce: https://medium.com/poka-techblog/simplify-your-javascript-use-map-reduce-and-filter-bd02c593cc2d
