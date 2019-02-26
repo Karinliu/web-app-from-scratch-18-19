@@ -2,28 +2,31 @@
 (function() {
 
     const router = {
-        handle: function(){
-                localstorageData.handle();
-            },
-        init: function() {
-            routie({ 
+        // init: function() {
+        //     localstorageData.handle();
+        // },
+        routes: function() {
+            routie({
                 '': function() {
+                    sections.showLoader();          //Start loader
                     api.getData(api.overViewUrl)
                         .then(data => {
-                            sections.showMain();
-                            render.createElements(data);
-                            localstorageData.localData(data);
+                            sections.showMain();  //End loader + Show main
+                            render.createElements(data);  //Render createElements
+                            localstorageData.localData(data);  //Store data in localstorage
                             console.log('data is home');
                         })
                         .catch(error => {
-                    });
+
+                        });
                 },
                 'detail/:id': function() {
-                    api.getData(api.overViewUrl)
+                    sections.showLoader();      //Start loader
+                    api.getData(api.overViewUrl)    //End loader + show detail
                         .then(data => {
-                            console.log('data is detail')
+                            console.log('data is detail');
                             sections.showDetail();
-                            render.createDetailElements(data)
+                            render.createDetailElements(data); 
                         });
                 }
             })
@@ -31,21 +34,37 @@
     };
 
     const sections = {
-        // Hide detail the sections
+        // Show main sections
         showMain: function() {
             const home = document.getElementById("home");
             const detail = document.getElementById("detail");
+            const loader = document.getElementById("loader");
 
             home.classList.remove("hidden")
             detail.classList.add("hidden")
+            loader.classList.add("hidden")
         },
-        // Hide main section
+        // Show detail section
         showDetail: function() {
             const home = document.getElementById("home");
             const detail = document.getElementById("detail");
+            const loader = document.getElementById("loader");
+
 
             home.classList.add("hidden")
             detail.classList.remove("hidden")
+            loader.classList.add("hidden")
+        },
+        // Show loader section
+        showLoader: function() {
+            const home = document.getElementById("home");
+            const detail = document.getElementById("detail");
+            const loader = document.getElementById("loader");
+
+
+            home.classList.add("hidden")
+            detail.classList.add("hidden")
+            loader.classList.remove("hidden")
         }
     }
 
@@ -82,34 +101,34 @@
             let getLocalstorageData = localStorage.getItem('film');
             getLocalstorageData = JSON.parse(getLocalstorageData);
 
-            if (getLocalstorageData){ //If localData has data then use this data
-                
-            }
-            else{              //If localstorage is empty, do a get request
-               router.init();
+            if (getLocalstorageData) { //If localData has data then use this data
+                sections.showMain();
+                render.createElements(getLocalstorageData);
+                console.log(getLocalstorageData)
+            } else { //If localstorage is empty, do a get request
+                router.init();
             }
             // logic if empty => init()
             // if not... do sum with local storage data
         },
-        localData: function(data){ 
+        localData: function(data) {
             const saveLocalData = [];
 
             data.map(films => { // Map is used to get only an array that contains the title and descriptions of the data from each film.
                 const localElements = { // create elements for the class and div's.
+                    id: films.id,
                     title: films.title,
                     description: films.description,
                     director: films.director,
                     producer: films.producer,
-                    releasedate: films.release_date,
-                    ratescore: films.rt_score
+                    release_date: films.release_date,
+                    rt_score: films.rt_score
                 };
                 saveLocalData.push(localElements)
                     // console.log(films.title);
             })
 
-            window.localStorage.setItem('film', JSON.stringify(saveLocalData));          //Set title and description in localStorage
-            const jsLocalstorage = JSON.parse(window.localStorage.getItem('film'));   // parse window.localstorage into a json object
-            console.log(jsLocalstorage);
+            window.localStorage.setItem('film', JSON.stringify(saveLocalData)); //Set title and description in localStorage
         }
     }
 
@@ -120,14 +139,14 @@
             const saveData = [];
 
             data.map(films => { // Map is used to get only an array that contains the title and descriptions of the data from each film.
-                const templateElements = { // create elements for the class and div's.
-                    title: films.title,
-                    description: films.description,
-                };
-                saveData.push(templateElements)
-                    // console.log(films.title);
-            })
-            // Transparency.render(template, saveData);
+                    const templateElements = { // create elements for the class and div's.
+                        title: films.title,
+                        description: films.description,
+                    };
+                    saveData.push(templateElements)
+                        // console.log(films.title);
+                })
+                // Transparency.render(template, saveData);
 
             const directives = { // Directives are plain javascript functions defined in a two-dimensional object literal, i.e.,
                 link: {
@@ -136,7 +155,7 @@
                     }
                 }
             }
-            
+
             Transparency.render(template, data, directives, saveData);
         },
         createDetailElements: function(data) {
@@ -155,15 +174,15 @@
                     description: filmId.description,
                     director: 'Director: ' + filmId.director,
                     producer: 'Producer: ' + filmId.producer,
-                    releasedate: 'Releasedata: ' + filmId.release_date,
-                    ratescore: 'Average ratescore: '+ filmId.rt_score
+                    release_date: 'Releasedata: ' + filmId.release_date,
+                    rt_score: 'Average ratescore: ' + filmId.rt_score
                 };
                 saveDetailData.push(templateDetailElements)
             })
             Transparency.render(template, saveDetailData);
         }
     };
-    router.handle();
+    router.routes();
 })();
 
 // Reference filter, map and reduce: https://medium.com/poka-techblog/simplify-your-javascript-use-map-reduce-and-filter-bd02c593cc2d
