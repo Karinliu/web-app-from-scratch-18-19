@@ -61,6 +61,9 @@ section{
 #loader{
   background: none;
   border: none;
+  background-image: url(../images/ball-triangle.svg);
+  background-repeat: no-repeat;
+  background-position: 50%;
 }
 
 #loader img{

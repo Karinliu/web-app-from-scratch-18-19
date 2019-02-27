@@ -8,10 +8,10 @@
         routes: function() {
             routie({
                 '': function() {
-                    sections.showLoader();          //Start loader
+                    sections.toggle(sections.showLoader);          //Start loader
                     api.getData(api.overViewUrl)
                         .then(data => {
-                            sections.showMain();  //End loader + Show main
+                            sections.toggle(sections.showMain);  //End loader + Show main
                             render.createElements(data);  //Render createElements
                             localstorageData.localData(data);  //Store data in localstorage
                             console.log('data is home');
@@ -21,11 +21,11 @@
                         });
                 },
                 'detail/:id': function() {
-                    sections.showLoader();      //Start loader
+                    sections.toggle(sections.showLoader);      //Start loader
                     api.getData(api.overViewUrl)    //End loader + show detail
                         .then(data => {
                             console.log('data is detail');
-                            sections.showDetail();
+                            sections.toggle(sections.showDetail);
                             render.createDetailElements(data); 
                         });
                 }
@@ -34,42 +34,20 @@
     };
 
     const sections = {
-        // Show main sections
-        showMain: function() {
-            const home = document.getElementById("home");
-            const detail = document.getElementById("detail");
-            const loader = document.getElementById("loader");
+        showMain: document.getElementById("home"),      // Get sections elemen Home and return
+        showDetail: document.getElementById("detail"),  // Get sections elemen Detail and return
+        showLoader: document.getElementById("loader"),  // Get sections elemen Loader and return
+        toggle: function(element) {
+            sections.showMain.classList.add('hidden');
+            sections.showLoader.classList.add('hidden');
+            sections.showDetail.classList.add('hidden');
 
-            home.classList.remove("hidden")
-            detail.classList.add("hidden")
-            loader.classList.add("hidden")
-        },
-        // Show detail section
-        showDetail: function() {
-            const home = document.getElementById("home");
-            const detail = document.getElementById("detail");
-            const loader = document.getElementById("loader");
-
-
-            home.classList.add("hidden")
-            detail.classList.remove("hidden")
-            loader.classList.add("hidden")
-        },
-        // Show loader section
-        showLoader: function() {
-            const home = document.getElementById("home");
-            const detail = document.getElementById("detail");
-            const loader = document.getElementById("loader");
-
-
-            home.classList.add("hidden")
-            detail.classList.add("hidden")
-            loader.classList.remove("hidden")
+            element.classList.toggle("hidden");
         }
     }
 
     const api = {
-        overViewUrl: 'https://ghibliapi.herokuapp.com/films/', //Get api
+        overViewUrl: 'https://ghibliapi.herokuapp.com/films/', //Get api and return
         getData: function(overview) {
             return new Promise(function(resolve, reject) { //return Promise
 
