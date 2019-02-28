@@ -52,8 +52,7 @@
             element.classList.toggle("hidden"); //When one of the sections is clicked, take off the class hidden.
         },
         show: function(element){
-            element.classList.remove("hidden");
-
+           sections.showError.classList.remove('hidden');  
         }
     };
 
