@@ -21,7 +21,7 @@
                     console.log('data is home');
                 })
                 .catch(error => {
-                    sections.toggle(sections.showError);
+                    sections.show(sections.showError);
                 });
         },
         detailPage: function() {
@@ -33,7 +33,7 @@
                     console.log('data is detail');
                 })
                 .catch(error => {
-                    sections.toggle(sections.showError);
+                    sections.show(sections.showError);
                 });
         }
     };
@@ -50,6 +50,10 @@
             sections.showError.classList.add('hidden');     // Set hidden
 
             element.classList.toggle("hidden"); //When one of the sections is clicked, take off the class hidden.
+        },
+        show: function(element){
+            element.classList.remove("hidden");
+
         }
     };
 
