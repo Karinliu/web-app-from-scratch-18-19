@@ -32,9 +32,6 @@
                     render.createDetailElements(data);
                     console.log('data is detail');
                 })
-                .catch(error => {
-                    sections.toggle(sections.showError);
-                });
         }
     };
 
