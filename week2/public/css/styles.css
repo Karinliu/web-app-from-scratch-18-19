@@ -107,6 +107,16 @@ a{
   grid-column: 1/3;
 }
 
+#error{
+  background: none;
+  border: none;
+}
+
+#error a{
+    text-decoration: underline;
+    color: teal;
+}
+
 
 @media (min-width: 30em){
   main{
@@ -122,6 +132,10 @@ a{
 
   #loader{
     grid-column: 1/3;
+  }  
+
+  #error{
+    grid-column: 1/3;
   }
 }
 
@@ -131,7 +145,7 @@ a{
     grid-template-columns: 1fr 1fr 1fr;
   }
   #home{
-    height: 19em;
+    height: 25em;
   }
 
   #detail{
@@ -139,6 +153,9 @@ a{
   }
 
   #loader{
+    grid-column: 1/5;
+  }
+  #error{
     grid-column: 1/5;
   }
 }
