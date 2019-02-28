@@ -1,5 +1,3 @@
-### Week 2 - Design and Refactor 🛠
-
 ## My app and the purpose of the app
 The app shows you a list of all the Studio Ghibli films. The first thing you will see on the home page is a list of titles. When you go over the cards with your mouse, a short descriptions of the film will be shown.
 
@@ -23,7 +21,8 @@ See below the functions that the application contains and what the actors are. T
 <details><summary>New actor diagram</summary>
 <p>
 
-![diagrammen-02](https://user-images.githubusercontent.com/32538678/53564799-1828d200-3b58-11e9-8bb2-f1531d7762c0.png)
+![diagram-02](https://user-images.githubusercontent.com/32538678/53598240-7aa7bf80-3ba4-11e9-92e9-ae894bca59a3.png)
+
 
 </p>
 </details>
@@ -55,17 +54,13 @@ Before I explain the code, I will first draw the interaction diagram how the use
 <details><summary>New interaction diagram</summary>
 <p>
 
-![diagrammen-01](https://user-images.githubusercontent.com/32538678/53564798-1828d200-3b58-11e9-9af8-2fed7ce34533.png)
+![diagram-01](https://user-images.githubusercontent.com/32538678/53598239-7aa7bf80-3ba4-11e9-8e64-4d4491f8d892.png)
 
 </p>
 </details>
 
 ## How my app works
 During the development of the app there are different ways in which you can write a function to render the API.
-
-### My bug :(
-Before I explain these methods, I have to say that the app contains a bug. In my app I tried to apply a template engine (will be explained later). But the problem is that the template engine does not work like how it should work.
-
 
 ### Methods for an API
 When writing the JavaScript code, I have applied three ways for calling the API. To see this examples u can go to `week 1` and look into the Javascript map.
@@ -96,32 +91,29 @@ To retrieve pages I used [Routie](https://github.com/jgallen23/routie). Routie i
 
 [Here](https://github.com/Karinliu/web-app-from-scratch-18-19/blob/48f01ae826c1499551d0b6158de3432de8fef301/week2/public/js/app.js#L4-L26) in my Javascript file i have used `Routie`.
 
-By using the following you can retrieve the home page (index.html).
+By using the following you can retrieve the home page and the detail page.
 
 ```
-routie('/', () => {
-        render.createElements(data)
-        console.log('data is home')
-      })
+routie({
+        '': function() {
+                sections.toggle(sections.showMain); 
+                render.createElements(data); 
+                console.log('Page is home');
+        },
+        'detail/:id': function() {
+                sections.toggle(sections.showDetail);   
+                render.createDetailElements(data);
+                console.log('Page is detail');
+        }
+});
 ```
-[Reference routie index.html](https://github.com/Karinliu/web-app-from-scratch-18-19/blob/48f01ae826c1499551d0b6158de3432de8fef301/week2/public/js/app.js#L5-L12)
 
-To retrieve the detail page, the code has to be written slightly differently like:
-```
-routie('detail', () => {
-      render.createElements(data)
-      window.location.hash = 'detail';
-      })
-```
-
-The `window.location.hash` returns the anchor part of a URL.
-
-[Reference detail page](https://github.com/Karinliu/web-app-from-scratch-18-19/blob/48f01ae826c1499551d0b6158de3432de8fef301/week2/public/js/app.js#L17-L21)
+To see the exact code above you can find it here: [Example routie](https://github.com/Karinliu/web-app-from-scratch-18-19/blob/c21b2223af990a7fe93ba4e23df832439113dff8/week2/public/js/app.js#L8-L22)
 
 ##### Template Transparency
 By loading in the data from the API, I have used a template engine named [Transparency](https://github.com/leonidas/transparency/). Transparency is a client-side template engine which binds data to DOM.
 
-For rendering data in the `html` file you have to add classes and id's in to your file. For [example](https://github.com/Karinliu/web-app-from-scratch-18-19/blob/48f01ae826c1499551d0b6158de3432de8fef301/week2/index.html#L12-L21) what I have:
+For rendering data in the `html` file you have to add classes and id's in to your file. For [example](https://github.com/Karinliu/web-app-from-scratch-18-19/blob/c21b2223af990a7fe93ba4e23df832439113dff8/week2/index.html#L31-L38) what I have:
 ```
 <a href="#detail">
       <section class="template">
@@ -132,43 +124,105 @@ For rendering data in the `html` file you have to add classes and id's in to you
         <p class="releasedate"></p>
         <p class="ratescore"></p>
       </section>
-    </a>
+</a>
 
 ```
-After you added classes and id's into your file you can combine it with the data function in your Javascript file. Like [this](https://github.com/Karinliu/web-app-from-scratch-18-19/blob/48f01ae826c1499551d0b6158de3432de8fef301/week2/public/js/app.js#L66-L82):
+After you added classes and id's into your file you can combine it with the data function in your Javascript file. Like [this](https://github.com/Karinliu/web-app-from-scratch-18-19/blob/c21b2223af990a7fe93ba4e23df832439113dff8/week2/public/js/app.js#L137-L156):
 
 ```
-const render = {   // Rendering data
-    createElements: function(data){
-      const template = document.querySelector('.template');
-      data.forEach(films => {
-        const templateElements = {   // create elements for the class and div's.
-          title: films.title,
-          description:  films.description,
-          director: films.director,
-          producer: films.producer,
-          releasedate: films.releasedate,
-          ratescore: films.ratescore
+const template = document.getElementById('main'); 
+const saveDetailData = []; 
+const currentUrl = document.URL; 
+const id = currentUrl.substring(currentUrl.lastIndexOf('/') + 1); 
+
+const filmId = data.filter(films => {
+        return films.id === id; 
+});
+filmId.map(filmId => { 
+        const templateDetailElements = { 
+                title: filmId.title,
+                description: filmId.description,
+                director: 'Director: ' + filmId.director,
+                producer: 'Producer: ' + filmId.producer,
+                release_date: 'Releasedata: ' + filmId.release_date,
+                rt_score: 'Average ratescore: ' + filmId.rt_score
         };
-        console.log(films.title)
-        Transparency.render(template, templateElements);
-     });
-    }
-  }
+                saveDetailData.push(templateDetailElements);
+})
+Transparency.render(template, saveDetailData);
 ```
 By calling `.render()` the data will be loaded in into the template.
 
-## Localstorage?
-The reason why localstorage is transparent in the actor diagrarm and interaction diagram, is because the data what is found from the API get request is parsed into the localstorage. But the problem what I have in the code is that the localstorage data can't be found to render.
+## Filter, map, reduce
+In the example above u see that I used filter and reduce. But what are these functions for? Before I tell you what these two functions are , I will first tell you some about the code above.
+
+This part of the code:
+
+```
+const currentUrl = document.URL; 
+const id = currentUrl.substring(currentUrl.lastIndexOf('/') + 1); 
+```
+
+The `const currentURL` will get the current url from document of your page. and this part `const id` Takes out the id from url.
+
+So when de id is retrieved from the current url, I use `Filter` for filtering the `id` from the api JSON document. In filter I say: *if data id is same as id from url return true, if not then false*. And with `map` I say: when filter returned true, then get all the data from that array id. Simple right?
+
+
+If you want to read more about the function `filter, map and reduce` I recommend you to read this article:[Reference filter, map and reduce](https://medium.com/poka-techblog/simplify-your-javascript-use-map-reduce-and-filter-bd02c593cc2d).
+
+
+## LocalStorage
+Other function what I have added into this application is a `localstorage`. When my API make his first get request to parse data to my application, I [said](https://github.com/Karinliu/web-app-from-scratch-18-19/blob/c21b2223af990a7fe93ba4e23df832439113dff8/week2/public/js/app.js#L107): 
+```
+window.localStorage.setItem('film', JSON.stringify(saveLocalData));
+```
+
+What this means is when my application made a request with the api, save the following data in localStorage with the name `film`.
+
+#### So?
+The reason why I save the data in localstorage. The reason why is because my application does not need to do a get request every time the user returns to the `homepage`.
+
+So what did I do? I wrote a function that says: Go to `localstorage` with the label `film`. When there is data in localstorage parse it to a JSON file and store it back into localstorage. 
+
+And with an `if/else` statement I said: If there is data in localstorage, yes? use that! if not, do a get request with the api!
+
+See [below](https://github.com/Karinliu/web-app-from-scratch-18-19/blob/c21b2223af990a7fe93ba4e23df832439113dff8/week2/public/js/app.js#L70-L89) the handle function:
+
+```
+handleData: function() {
+            let getLocalstorageData = localStorage.getItem('film');
+            getLocalstorageData = JSON.parse(getLocalstorageData);
+
+            if (getLocalstorageData) { //If localData has data then use this data and do the following things:
+                sections.toggle(sections.showLoader);
+                router.routes(getLocalstorageData);     //Give localstorageData to route.routes.
+                console.log('Data is from localstorage');
+
+            } else { //If localstorage is empty, do a get request.
+                sections.toggle(sections.showLoader);
+                api.getData(api.overViewUrl) //End loader + show detail
+                    .then(data => {
+                        router.routes(data);
+                    })
+                    .catch(error => {
+                        sections.toggle(sections.showError);
+                    });
+                console.log('Data is from API');
+            }
+}            
+```
 
 ## Design patterns and best practices
-
-Creating the application there were some requirement (best practices) what we can't do for writing Vanilla javascript. For example no global variables and use an IIFE.
+By creating the application there were some requirement (best practices) what we can't do for writing Vanilla javascript. For example no global variables and use an IIFE.
 
 Instead by using no global variables, I used `object literals` in my application. If u look into my code u can see that all my functions are placed inside a const variable.
 
+See here my code: [Example object literals](https://github.com/Karinliu/web-app-from-scratch-18-19/blob/master/week2/public/js/app.js)
+
 ## Feature wishlist / backlog
-what I would like to use in my application is a template engine that can load all data from the API. Also would i like to add a filter function where the user can filter on movies.
+The feature wishlist that I would like to use for in my application is to add a filter function where the user can filter on movies (for example on title or director). Another function that I would really like to build into my application is an sort function, so the user can sort on alphabet.
+
+Personally, I also think that the application may be better styled.
 
 ### What do I miss in the API
 What I find very unfortunate about the API is that it does not contains images or trailers. Personally I would  like to see images than only just text when I look up a movie. :)
