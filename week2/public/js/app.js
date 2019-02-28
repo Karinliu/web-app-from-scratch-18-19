@@ -2,69 +2,77 @@
 (function() {
 
     const router = {
-        // init: function() {
-        //     localstorageData.handle();
-        // },
-        routes: function() {
+        init: function() {
             routie({
                 '': function() {
-                    sections.toggle(sections.showLoader);          //Start loader
-                    api.getData(api.overViewUrl)
-                        .then(data => {
-                            sections.toggle(sections.showMain);  //End loader + Show main
-                            render.createElements(data);  //Render createElements
-                            localstorageData.localData(data);  //Store data in localstorage
-                            console.log('data is home');
-                        })
-                        .catch(error => {
-
-                        });
+                    router.overviewPage();
                 },
                 'detail/:id': function() {
-                    sections.toggle(sections.showLoader);      //Start loader
-                    api.getData(api.overViewUrl)    //End loader + show detail
-                        .then(data => {
-                            console.log('data is detail');
-                            sections.toggle(sections.showDetail);
-                            render.createDetailElements(data); 
-                        });
+                    router.detailPage();
                 }
-            })
+            });
+        },
+        overviewPage: function() {
+            sections.toggle(sections.showLoader); //Start loader
+            api.getData(api.overViewUrl)
+                .then(data => {
+                    sections.toggle(sections.showMain); //End loader + Show main
+                    render.createElements(data); //Render createElements
+                    console.log('data is home');
+                })
+                .catch(error => {
+                    sections.toggle(sections.showError);
+                });
+        },
+        detailPage: function() {
+            sections.toggle(sections.showLoader); //Start loader
+            api.getData(api.overViewUrl) //End loader + show detail
+                .then(data => {
+                    sections.toggle(sections.showDetail);
+                    render.createDetailElements(data);
+                    console.log('data is detail');
+                })
+                .catch(error => {
+                    sections.toggle(sections.showError);
+                });
         }
     };
 
     const sections = {
-        showMain: document.getElementById("home"),      // Get sections elemen Home and return
-        showDetail: document.getElementById("detail"),  // Get sections elemen Detail and return
-        showLoader: document.getElementById("loader"),  // Get sections elemen Loader and return
+        showMain: document.getElementById("home"), // Get sections element Home and return.
+        showDetail: document.getElementById("detail"), // Get sections element Detail and return.
+        showLoader: document.getElementById("loader"), // Get sections element Loader and return.
+        showError: document.getElementById("error"), // Get sections element Error and return.
         toggle: function(element) {
-            sections.showMain.classList.add('hidden');
-            sections.showLoader.classList.add('hidden');
-            sections.showDetail.classList.add('hidden');
+            sections.showMain.classList.add('hidden');      // Set hidden
+            sections.showLoader.classList.add('hidden');    // Set hidden
+            sections.showDetail.classList.add('hidden');    // Set hidden
+            sections.showError.classList.add('hidden');     // Set hidden
 
-            element.classList.toggle("hidden");
+            element.classList.toggle("hidden"); //When one of the sections is clicked, take off the class hidden.
         }
-    }
+    };
 
     const api = {
-        overViewUrl: 'https://ghibliapi.herokuapp.com/films/', //Get api and return
+        overViewUrl: 'https://ghibliapi.herokuapp.com/films/', //Get api and return.
         getData: function(overview) {
-            return new Promise(function(resolve, reject) { //return Promise
+            return new Promise(function(resolve, reject) { //return Promise.
 
                 const request = new XMLHttpRequest();
-                request.open('GET', api.overViewUrl, true) //get request from url
+                request.open('GET', api.overViewUrl, true) //get request from url.
 
                 request.onload = () => {
                     if (request.status >= 200 && request.status < 400) { // if status is higher than 200 and status is lower than 400 perform function.
-                        const data = api.parseData(request); //Fetch data from API into JavaScript file
-                        resolve(data); // "resolve" the function createElements
+                        const data = api.parseData(request); //Fetch data from API into JavaScript file.
+                        resolve(data); // "resolve" the function createElements & createDetailElements.
+                        localstorageData.localData(data); //Store data in localstorage.
 
-                    } else { // if not then performs this function
+                    } else { // If not then performs this function
                         reject(error); // error
                     }
                 };
                 request.onerror = () => {
-                    reject(error) // connextion error
+                    reject(error) // Connextion error.
                 };
                 request.send();
             });
@@ -72,22 +80,21 @@
         parseData: function(request) {
             return JSON.parse(request.responseText);
         }
-    }
+    };
+
 
     const localstorageData = {
         handle: function() {
             let getLocalstorageData = localStorage.getItem('film');
             getLocalstorageData = JSON.parse(getLocalstorageData);
 
-            if (getLocalstorageData) { //If localData has data then use this data
-                sections.showMain();
+            if (getLocalstorageData) { //If localData has data then use this data and do the following things:
+                sections.toggle(sections.showMain);
                 render.createElements(getLocalstorageData);
-                console.log(getLocalstorageData)
-            } else { //If localstorage is empty, do a get request
-                router.init();
+
+            } else { //If localstorage is empty, do a get request.
+                router.init()
             }
-            // logic if empty => init()
-            // if not... do sum with local storage data
         },
         localData: function(data) {
             const saveLocalData = [];
@@ -102,13 +109,12 @@
                     release_date: films.release_date,
                     rt_score: films.rt_score
                 };
-                saveLocalData.push(localElements)
-                    // console.log(films.title);
+                saveLocalData.push(localElements);
             })
 
-            window.localStorage.setItem('film', JSON.stringify(saveLocalData)); //Set title and description in localStorage
+            window.localStorage.setItem('film', JSON.stringify(saveLocalData)); //Set title and description in localStorage.
         }
-    }
+    };
 
     const render = {
         // Trying transparency template
@@ -121,8 +127,8 @@
                         title: films.title,
                         description: films.description,
                     };
-                    saveData.push(templateElements)
-                        // console.log(films.title);
+                    saveData.push(templateElements);
+                    // console.log(films.title);
                 })
                 // Transparency.render(template, saveData);
 
@@ -133,16 +139,14 @@
                     }
                 }
             }
-
             Transparency.render(template, data, directives, saveData);
         },
         createDetailElements: function(data) {
-            const template = document.getElementById('main');
+            const template = document.getElementById('main'); //Get element main.
             const saveDetailData = []; //Save the detail elements in this array.
             const currentUrl = document.URL; //Get current url from document
             const id = currentUrl.substring(currentUrl.lastIndexOf('/') + 1); //Take out the id from url.
 
-            // console.log(data.id)
             const filmId = data.filter(films => {
                 return films.id === id; //if data id is same as id from url return true.
             });
@@ -155,12 +159,12 @@
                     release_date: 'Releasedata: ' + filmId.release_date,
                     rt_score: 'Average ratescore: ' + filmId.rt_score
                 };
-                saveDetailData.push(templateDetailElements)
+                saveDetailData.push(templateDetailElements);
             })
             Transparency.render(template, saveDetailData);
         }
-    };
-    router.routes();
+    }
+    router.init();
 })();
 
 // Reference filter, map and reduce: https://medium.com/poka-techblog/simplify-your-javascript-use-map-reduce-and-filter-bd02c593cc2d
