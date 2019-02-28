@@ -2,36 +2,22 @@
 (function() {
 
     const router = {
-        init: function() {
+        init: function(){
+            apiData.handleData();
+        },
+        routes: function(data) {
             routie({
                 '': function() {
-                    router.overviewPage();
-                },
-                'detail/:id': function() {
-                    router.detailPage();
-                }
-            });
-        },
-        overviewPage: function() {
-            sections.toggle(sections.showLoader); //Start loader
-            api.getData(api.overViewUrl)
-                .then(data => {
                     sections.toggle(sections.showMain); //End loader + Show main
                     render.createElements(data); //Render createElements
-                    console.log('data is home');
-                })
-                .catch(error => {
-                    sections.toggle(sections.showError);
-                });
-        },
-        detailPage: function() {
-            sections.toggle(sections.showLoader); //Start loader
-            api.getData(api.overViewUrl) //End loader + show detail
-                .then(data => {
+                    console.log('Page is home');
+                },
+                'detail/:id': function() {
                     sections.toggle(sections.showDetail);
                     render.createDetailElements(data);
-                    console.log('data is detail');
-                })
+                    console.log('Page is detail');
+                }
+            });
         }
     };
 
@@ -41,10 +27,10 @@
         showLoader: document.getElementById("loader"), // Get sections element Loader and return.
         showError: document.getElementById("error"), // Get sections element Error and return.
         toggle: function(element) {
-            sections.showMain.classList.add('hidden');      // Set hidden
-            sections.showLoader.classList.add('hidden');    // Set hidden
-            sections.showDetail.classList.add('hidden');    // Set hidden
-            sections.showError.classList.add('hidden');     // Set hidden
+            sections.showMain.classList.add('hidden'); // Set hidden
+            sections.showLoader.classList.add('hidden'); // Set hidden
+            sections.showDetail.classList.add('hidden'); // Set hidden
+            sections.showError.classList.add('hidden'); // Set hidden
 
             element.classList.toggle("hidden"); //When one of the sections is clicked, take off the class hidden.
         }
@@ -62,7 +48,7 @@
                     if (request.status >= 200 && request.status < 400) { // if status is higher than 200 and status is lower than 400 perform function.
                         const data = api.parseData(request); //Fetch data from API into JavaScript file.
                         resolve(data); // "resolve" the function createElements & createDetailElements.
-                        localstorageData.localData(data); //Store data in localstorage.
+                        apiData.localstorageData(data); //Store data in localstorage.
 
                     } else { // If not then performs this function
                         reject(error); // error
@@ -80,20 +66,29 @@
     };
 
 
-    const localstorageData = {
-        handle: function() {
+    const apiData = {
+        handleData: function() {
             let getLocalstorageData = localStorage.getItem('film');
             getLocalstorageData = JSON.parse(getLocalstorageData);
 
             if (getLocalstorageData) { //If localData has data then use this data and do the following things:
-                sections.toggle(sections.showMain);
-                render.createElements(getLocalstorageData);
+                sections.toggle(sections.showLoader);
+                router.routes(getLocalstorageData);     //Give localstorageData to route.routes.
+                console.log('Data is from localstorage');
 
             } else { //If localstorage is empty, do a get request.
-                router.init()
+                sections.toggle(sections.showLoader);
+                api.getData(api.overViewUrl) //End loader + show detail
+                    .then(data => {
+                        router.routes(data);
+                    })
+                    .catch(error => {
+                        sections.toggle(sections.showError);
+                    });
+                console.log('Data is from API');
             }
         },
-        localData: function(data) {
+        localstorageData: function(data) {
             const saveLocalData = [];
 
             data.map(films => { // Map is used to get only an array that contains the title and descriptions of the data from each film.
