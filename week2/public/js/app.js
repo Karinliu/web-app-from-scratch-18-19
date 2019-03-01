@@ -2,7 +2,7 @@
 (function() {
 
     const router = {
-        init: function(){
+        init: function() {
             apiData.handleData();
         },
         routes: function(data) {
@@ -22,17 +22,17 @@
     };
 
     const sections = {
-        showMain: document.getElementById("home"), // Get sections element Home and return.
-        showDetail: document.getElementById("detail"), // Get sections element Detail and return.
-        showLoader: document.getElementById("loader"), // Get sections element Loader and return.
-        showError: document.getElementById("error"), // Get sections element Error and return.
+        showMain: document.getElementById('home'), // Get sections element Home and return.
+        showDetail: document.getElementById('detail'), // Get sections element Detail and return.
+        showLoader: document.getElementById('loader'), // Get sections element Loader and return.
+        showError: document.getElementById('error'), // Get sections element Error and return.
         toggle: function(element) {
             sections.showMain.classList.add('hidden'); // Set hidden
             sections.showLoader.classList.add('hidden'); // Set hidden
             sections.showDetail.classList.add('hidden'); // Set hidden
             sections.showError.classList.add('hidden'); // Set hidden
 
-            element.classList.toggle("hidden"); //When one of the sections is clicked, take off the class hidden.
+            element.classList.toggle('hidden'); //When one of the sections is clicked, take off the class hidden.
         }
     };
 
@@ -73,7 +73,7 @@
 
             if (getLocalstorageData) { //If localData has data then use this data and do the following things:
                 sections.toggle(sections.showLoader);
-                router.routes(getLocalstorageData);     //Give localstorageData to route.routes.
+                router.routes(getLocalstorageData); //Give localstorageData to route.routes.
                 console.log('Data is from localstorage');
 
             } else { //If localstorage is empty, do a get request.
@@ -109,25 +109,22 @@
     };
 
     const render = {
-        // Trying transparency template
         createElements: function(data) {
             const template = document.getElementById('main');
             const saveData = [];
 
             data.map(films => { // Map is used to get only an array that contains the title and descriptions of the data from each film.
-                    const templateElements = { // create elements for the class and div's.
-                        title: films.title,
-                        description: films.description,
-                    };
-                    saveData.push(templateElements);
-                    // console.log(films.title);
-                })
-                // Transparency.render(template, saveData);
+                const templateElements = { // Create elements for the class and div's.
+                    title: films.title,
+                    description: films.description,
+                };
+                saveData.push(templateElements);
+            })
 
             const directives = { // Directives are plain javascript functions defined in a two-dimensional object literal, i.e.,
                 link: {
                     href() {
-                        return "#detail/" + this.id;
+                        return `#detail/${this.id}`;
                     }
                 }
             }
@@ -140,16 +137,16 @@
             const id = currentUrl.substring(currentUrl.lastIndexOf('/') + 1); //Take out the id from url.
 
             const filmId = data.filter(films => {
-                return films.id === id; //if data id is same as id from url return true.
+                return films.id === id; //If data id is same as id from url return true.
             });
-            filmId.map(filmId => { //when true return this data
+            filmId.map(filmId => { //When true return this data
                 const templateDetailElements = { // create elements for the class and div's.
                     title: filmId.title,
                     description: filmId.description,
-                    director: 'Director: ' + filmId.director,
-                    producer: 'Producer: ' + filmId.producer,
-                    release_date: 'Releasedata: ' + filmId.release_date,
-                    rt_score: 'Average ratescore: ' + filmId.rt_score
+                    director: `Director: ${filmId.director}`,
+                    producer: `Producer: ${filmId.producer}`,
+                    producer: `Releasedata: ${filmId.release_date}`,
+                    rt_score: `Average ratescore: ${filmId.rt_score}`
                 };
                 saveDetailData.push(templateDetailElements);
             })
